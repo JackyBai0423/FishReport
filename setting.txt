@@ -1,4 +1,0 @@
-miao_code=tmDOWH0
-log_path=E:/AngleBot/log
-function=3
-onhook_weight_alert=30
