@@ -33,25 +33,25 @@ print('开始监控日志文件，如需退出请按CTRL+c')
 # 渔获记录表格
 
 current_log_date = datetime.date.today().strftime("%Y-%m-%d")
-# catch_per_lure = {} # 记录渔获的dict
-# if os.path.exists(current_log_date+'fish.csv'):
-#     with open(current_log_date+'fish.csv', 'r') as current_fish_record:
-#         reader = csv.reader(current_fish_record)
-#         if reader.line_num>0:
-#             fish_species=next(reader)[0].split('\t')[1:]
-#         else:
-#             fish_species = []
-#         # 获取当日渔获统计
-#         for row in reader:
-#             row_data = row.split('\t')
-#             lure_name = row_data[0]
-#             lure_dict = {}
-#             for i in range(1,len(row_data)):
-#                 lure_dict[fish_species] = {'pass':row_data[i].split('|')[0],'nopass':row_data[i].split('|')[1]}
-#             catch_per_lure[lure_name] = lure_dict
-# else:
-#     fish_species = []
-# print(catch_per_lure)
+catch_per_lure = {} # 记录渔获的dict
+if os.path.exists(current_log_date+'fish.csv'):
+    with open(current_log_date+'fish.csv', 'r') as current_fish_record:
+        reader = csv.reader(current_fish_record)
+        if reader.line_num>0:
+            fish_species=next(reader)[0].split('\t')[1:]
+        else:
+            fish_species = []
+        # 获取当日渔获统计
+        for row in reader:
+            row_data = row.split('\t')
+            lure_name = row_data[0]
+            lure_dict = {}
+            for i in range(1,len(row_data)):
+                lure_dict[fish_species] = {'pass':row_data[i].split('|')[0],'nopass':row_data[i].split('|')[1]}
+            catch_per_lure[lure_name] = lure_dict
+else:
+    fish_species = []
+print(catch_per_lure)
 current_log = open(log_path+'/'+datetime.date.today().strftime("%Y-%m-%d")+".txt")
 # move the reading position to the end of the file
 last_pos = 0
@@ -59,7 +59,7 @@ current_log.seek(last_pos)
 current_log.read()
 last_pos = current_log.tell()
 # 写入渔获分析
-# current_fish_record = open(current_log_date+'fish.csv', 'w')
+current_fish_record = open(current_log_date+'fish.csv', 'w')
 while True:
     # 更新当前读取的日志文件，如果到了次日
     current_date = datetime.date.today().strftime("%Y-%m-%d")
@@ -86,27 +86,27 @@ while True:
             if onhook_weight >= onhook_weight_alert:
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'巨大的'+onhook_match.group(1)+'上钩了，重达'+onhook_match.group(2)+onhook_match.group(3)+'，快上号拉鱼！'}))
         if capture_match:
-        #     # 记录渔获
-        #     if capture_match.group(1) not in fish_species:
-        #         fish_species.append(capture_match.group(1))
-        #     if capture_match.group(6)[:-1] not in catch_per_lure:
-        #         catch_per_lure[capture_match.group(6)[:-1]] = {}
-        #         catch_per_lure[capture_match.group(6)[:-1]]['All'] = {'pass':0, 'nopass':0}
-        #     if capture_match.group(1) not in catch_per_lure[capture_match.group(6)[:-1]]:
-        #         catch_per_lure[capture_match.group(6)[:-1]][capture_match.group(1)] = {'pass':0, 'nopass':0}
-        #     if capture_match.group(2) != '普通':
-        #         catch_per_lure[capture_match.group(6)[:-1]][capture_match.group(1)]['pass'] += 1
-        #         catch_per_lure[capture_match.group(6)[:-1]]['All']['pass'] += 1
-        #     else: 
-        #         catch_per_lure[capture_match.group(6)[:-1]][capture_match.group(1)]['nopass'] += 1
-        #         catch_per_lure[capture_match.group(6)[:-1]]['All']['nopass'] += 1
+            # 记录渔获
+            if capture_match.group(1) not in fish_species:
+                fish_species.append(capture_match.group(1))
+            if capture_match.group(6)[:-1] not in catch_per_lure:
+                catch_per_lure[capture_match.group(6)[:-1]] = {}
+                catch_per_lure[capture_match.group(6)[:-1]]['All'] = {'pass':0, 'nopass':0}
+            if capture_match.group(1) not in catch_per_lure[capture_match.group(6)[:-1]]:
+                catch_per_lure[capture_match.group(6)[:-1]][capture_match.group(1)] = {'pass':0, 'nopass':0}
+            if capture_match.group(2) != '普通':
+                catch_per_lure[capture_match.group(6)[:-1]][capture_match.group(1)]['pass'] += 1
+                catch_per_lure[capture_match.group(6)[:-1]]['All']['pass'] += 1
+            else: 
+                catch_per_lure[capture_match.group(6)[:-1]][capture_match.group(1)]['nopass'] += 1
+                catch_per_lure[capture_match.group(6)[:-1]]['All']['nopass'] += 1
 
             if functions == '1' and capture_match.group(2) != '普通':
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'}))
             elif functions == '2' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠'):
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'}))
             elif functions == '3' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠' or capture_match.group(3) is not None):
-                request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+'['+capture_match.group(3)+']'}))
+                request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+('['+capture_match.group(3) +']')if capture_match.group(3) is not None else ''}))
         # if functions == '1' and line.split('【')[2][:2]=='达标':
         #     request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":line}))
         # elif (functions == '2' or functions == '3') and (line.split('【')[2][:2]=='星级' or line.split('【')[2][:2]=='蓝冠'):
