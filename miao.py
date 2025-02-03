@@ -111,17 +111,10 @@ while True:
 
             if functions == '1' and capture_match.group(2) != '普通':
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'}))
-                n.show_toast("捕获了",'渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']')
+                n.show_toast("捕获了",'渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']',"./fish_icons/"+capture_match.group(1)+".png")
             elif functions == '2' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠'):
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'}))
-                n.show_toast("捕获了",'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']')
+                n.show_toast("捕获了",'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']',"./fish_icons/"+capture_match.group(1)+".png")
             elif functions == '3' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠' or capture_match.group(3) is not None):
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+(('['+capture_match.group(3)+']') if capture_match.group(3) is not None else '')}))
-                n.show_toast("捕获了",'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+(('['+capture_match.group(3)+']') if capture_match.group(3) is not None else ''))
-        # if functions == '1' and line.split('【')[2][:2]=='达标':
-        #     request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":line}))
-        # elif (functions == '2' or functions == '3') and (line.split('【')[2][:2]=='星级' or line.split('【')[2][:2]=='蓝冠'):
-        #     request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":line}))
-    
-#/捕获：(?:[^【]*?)【(.+?)】【(.+?)】(?:【(.+?)】)?(\d+(?:\.\d+)?)([公斤|克]+).+?鱼饵:(.[^,]+)/
-# request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":text}))
+                n.show_toast("捕获了",'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+(('['+capture_match.group(3)+']') if capture_match.group(3) is not None else ''),"./fish_icons/"+capture_match.group(1)+".png")
