@@ -65,19 +65,23 @@ while True:
     current_date = datetime.date.today().strftime("%Y-%m-%d")
     if current_date != current_log_date:
         if os.path.exists(log_path+'/'+current_date+".txt"):
+            current_log_date = current_date
             current_log.close()
-            current_log = open(log_path+'/'+current_date+".txt") #+'Flog'
+            current_log = open(log_path+'/'+current_date+".txt")
             last_pos = 0
-        if not os.path.exists(current_date+'fish.csv'):
-            current_fish_record.close()
-            current_fish_record = open(current_date+'fish.csv', 'w')
+            current_log.seek(last_pos)
+            current_log.read()
+            last_pos = current_log.tell()
+        # if not os.path.exists(current_date+'fish.csv'):
+        #     current_fish_record.close()
+        #     current_fish_record = open(current_date+'fish.csv', 'w')
 
     current_log.seek(last_pos)
     line = current_log.readline()
     last_pos = current_log.tell()
     time.sleep(1)
     if len(line)>0:
-        onhook_match = re.search(r"鱼上钩了！鱼信息:【(.+?)】(\d+(?:\.\d+)?)([kg|g]+)",line)
+        onhook_match = re.search(r"鱼上钩了.+?鱼信息:【(.+?)】(\d+(?:\.\d+)?)([kg|g]+)",line)
         capture_match = re.search(r"捕获：(?:[^【]*?)【(.+?)】【(.+?)】(?:【(.+?)】)?(\d+(?:\.\d+)?)([公斤|克]+).+?鱼饵:(.[^,]+)",line)
         if onhook_match or capture_match:
             print(line)
@@ -106,7 +110,7 @@ while True:
             elif functions == '2' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠'):
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'}))
             elif functions == '3' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠' or capture_match.group(3) is not None):
-                request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+('['+capture_match.group(3)+']') if capture_match.group(3) is not None else ''}))
+                request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+(('['+capture_match.group(3)+']') if capture_match.group(3) is not None else '')}))
         # if functions == '1' and line.split('【')[2][:2]=='达标':
         #     request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":line}))
         # elif (functions == '2' or functions == '3') and (line.split('【')[2][:2]=='星级' or line.split('【')[2][:2]=='蓝冠'):
