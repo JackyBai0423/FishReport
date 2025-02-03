@@ -3,7 +3,10 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 import datetime, time, re
+from win10toast import ToastNotifier
 import csv
+
+n = ToastNotifier()
 
 # initialize setting
 if not os.path.exists("./setting.txt"):
@@ -89,6 +92,7 @@ while True:
             onhook_weight = float(onhook_match.group(2)) if onhook_match.group(3) == 'kg' else float(onhook_match.group(2))/1000
             if onhook_weight >= onhook_weight_alert:
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'巨大的'+onhook_match.group(1)+'上钩了，重达'+onhook_match.group(2)+onhook_match.group(3)+'，快上号拉鱼！'}))
+                n.show_toast("上大鱼了",'巨大的'+onhook_match.group(1)+'上钩了，重达'+onhook_match.group(2)+onhook_match.group(3)+'，快上号拉鱼！')
         if capture_match:
         #     # 记录渔获
         #     if capture_match.group(1) not in fish_species:
@@ -107,10 +111,13 @@ while True:
 
             if functions == '1' and capture_match.group(2) != '普通':
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'}))
+                n.show_toast("捕获了",'渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']')
             elif functions == '2' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠'):
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'}))
+                n.show_toast("捕获了",'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']')
             elif functions == '3' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠' or capture_match.group(3) is not None):
                 request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+(('['+capture_match.group(3)+']') if capture_match.group(3) is not None else '')}))
+                n.show_toast("捕获了",'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+(('['+capture_match.group(3)+']') if capture_match.group(3) is not None else ''))
         # if functions == '1' and line.split('【')[2][:2]=='达标':
         #     request.urlopen("http://miaotixing.com/trigger?" + parse.urlencode({"id":miao_code, "text":line}))
         # elif (functions == '2' or functions == '3') and (line.split('【')[2][:2]=='星级' or line.split('【')[2][:2]=='蓝冠'):
