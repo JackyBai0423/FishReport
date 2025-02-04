@@ -21,7 +21,7 @@ def csv_to_dict(csv_file_path, skip_header=True, encoding="utf-8"):
             if not row:
                 continue  
             key = row[0]      
-            value = row[1:]   # [trophy_weight, super_trophy_weight, max_weight, rarity]
+            value = [int(i) for i in row[1:]]   # [trophy_weight, super_trophy_weight, max_weight, rarity]
             data_dict[key] = value
     
     return data_dict
