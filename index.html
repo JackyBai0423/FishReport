@@ -1,0 +1,92 @@
+<!doctype html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>Blank template</title>
+
+        <!-- Load external CSS styles -->
+        <link rel="stylesheet" href="styles.css">
+
+    </head>
+
+    <body>
+
+        <h1>翁子微信推送</h1>
+        <div style="text-align: center">
+        <img src="pic.gif" width="500" height="300" ></img>
+        </div>
+        <form action="/set_setting" method="POST">
+        <div>
+            <label for="every_fish">达标</label>
+            <input
+                type="checkbox"
+                id="switch1"
+                name="switch1"
+                value="on"
+                {{ 'checked' if switch1 else '' }}
+            >
+        </div>
+
+        <div>
+            <label for="rare">稀有</label>
+            <input
+                type="checkbox"
+                id="switch2"
+                name="switch2"
+                value="on"
+                {{ 'checked' if switch2 else '' }}
+            >
+        </div>
+
+        <div>
+            <label for="trophy">星/蓝</label>
+            <input
+                type="checkbox"
+                id="switch3"
+                name="switch3"
+                value="on"
+                {{ 'checked' if switch3 else '' }}
+            >
+        </div>
+
+        <div>
+            <label for="missing_component">缺少部件</label>
+            <input
+                type="checkbox"
+                id="switch4"
+                name="switch4"
+                value="on"
+                {{ 'checked' if switch4 else '' }}
+            >
+        </div>
+
+        <div>
+            <label for="sale_fish">卖鱼提醒</label>
+            <input
+                type="checkbox"
+                id="switch4"
+                name="switch4"
+                value="on"
+                {{ 'checked' if switch4 else '' }}
+            >
+        </div>
+
+        <div>
+            <label for="fish_amount">定时播报渔获</label>
+            <input
+                type="checkbox"
+                id="switch4"
+                name="switch4"
+                value="on"
+                {{ 'checked' if switch4 else '' }}
+            >
+        </div>
+
+        <button type="submit">更新设置</button>
+    </form>
+        
+    </body>
+
+</html>

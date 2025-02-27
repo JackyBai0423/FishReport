@@ -59,53 +59,65 @@ class matcher:
         capture_match = re.search(r"捕获：(?:[^【]*?)【(.+?)】【(.+?)】(?:【(.+?)】)?(\d+(?:\.\d+)?)([公斤|克]+).+?鱼饵:(.[^,]+)",line)
         if capture_match:
             print(line)
-            self.fish_amount_stat_update(capture_match.group(1), float(capture_match.group(4)) if capture_match.group(5) == '公斤' else float(capture_match.group(4))/1000)
+            self.fish_amount_stat_update(capture_match.group(1), float(capture_match.group(4)) if capture_match.group(5) == '公斤' else round(float(capture_match.group(4))/1000,3), capture_match.group(6)(-1))
             if functions == '1' and capture_match.group(2) != '普通':
-                self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("捕获了 "+capture_match.group(1)+' '+capture_match.group(4)+capture_match.group(5),'渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']')).json()
+                self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("捕获了 "+capture_match.group(1)+' '+capture_match.group(4)+capture_match.group(5),'渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'))
                 self.n.show_toast("捕获了",'渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']',"./fish_icons/"+capture_match.group(1)+".ico")  
             elif functions == '2' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠'):
-                self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("捕获了 "+capture_match.group(1)+' '+capture_match.group(4)+capture_match.group(5),'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']')).json()
+                self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("捕获了 "+capture_match.group(1)+' '+capture_match.group(4)+capture_match.group(5),'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'))
                 self.n.show_toast("捕获了",'上星/蓝了！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']',"./fish_icons/"+capture_match.group(1)+".ico")
             elif functions == '3' and (capture_match.group(2) == '星级' or capture_match.group(2) == '蓝冠' or capture_match.group(3) is not None):
-                self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("捕获了 "+capture_match.group(1)+' '+capture_match.group(4)+capture_match.group(5),'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+(('['+capture_match.group(3)+']') if capture_match.group(3) is not None else ''))).json()
+                self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("捕获了 "+capture_match.group(1)+' '+capture_match.group(4)+capture_match.group(5),'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+(('['+capture_match.group(3)+']') if capture_match.group(3) is not None else '')))
                 self.n.show_toast("捕获了",'稀有鱼！渔夫使用了'+capture_match.group(6)[:-1]+'抓住了'+capture_match.group(4)+capture_match.group(5)+'的'+capture_match.group(1)+'['+capture_match.group(2)+']'+(('['+capture_match.group(3)+']') if capture_match.group(3) is not None else ''),"./fish_icons/"+capture_match.group(1)+".ico")
             
     def missing_parts_match(self, line):
         uid = self.uid
         missing_component_match = re.search(r"没有多余的【(.+?)】组件，尝试使用星标组件", line)
         if missing_component_match:
-            self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("缺少组件: "+missing_component_match.group(1),"背包里的【"+missing_component_match.group(1)+"】用完了，快去看看吧。")).json()
+            self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("缺少组件: "+missing_component_match.group(1),"背包里的【"+missing_component_match.group(1)+"】用完了，快去看看吧。"))
             self.n.show_toast("缺少组件","背包里的【"+missing_component_match.group(1)+"】用完了，快去看看吧。")
 
     def fish_sale_match(self, line):
         uid = self.uid
-        fish_sale_match = re.search(r"卖鱼收入：(.+?)",line)
+        fish_sale_match = re.search(r"卖鱼收入：(\d+.\d+)",line)
         if fish_sale_match:
-            res = {"code":0}
-            curr_attempt = 0
-            while res["code"] != 1000 and curr_attempt < 5:
-                self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("售出了 "+fish_sale_match.group(1)+'银币',"渔夫售出了"+fish_sale_match.group(1)+"银币")).json()
-                curr_attempt += 1
-            if res["code"] != 1000:
-                self.n.show_toast("发送失败","发送失败，请检查网络连接或联系开发人员！")
+            self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("售出了 "+fish_sale_match.group(1)+'银币',"渔夫售出了"+fish_sale_match.group(1)+"银币"))
             self.n.show_toast("售出了","渔夫售出了"+fish_sale_match.group(1)+"银币")
+        self.report_fish_amount()
 
-    def fish_amount_stat_update(self, fish_name, weight):
+    def fish_amount_stat_update(self, fish_name, weight, lure):
         fish_amount = self.fish_amount
         if fish_name in fish_amount:
-            fish_amount[fish_name] += weight
+            if lure in fish_amount[fish_name]:
+                fish_amount[fish_name][lure][0] += weight
+                fish_amount[fish_name][lure][1] += 1
+            else:
+                fish_amount[fish_name][lure] = [weight, 1]
         else:
-            fish_amount[fish_name] = weight
-
+            fish_amount[fish_name] = {lure:[weight, 1]}
     def report_fish_amount(self):
         fish_amount = self.fish_amount
         if fish_amount:
-            # genenrate report as a html table
-            report = "<table border='1'><tr><th>鱼名</th><th>总重</th></tr>"
-            for fish_name, weight in fish_amount.items():
-                report += "<tr><td>"+fish_name+"</td><td>"+str(weight)+"</td></tr>"
+            # generate a html bar chart
+            script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>'
+            script += '<canvas id="myChart" width="400" height="400"></canvas>'
+            script += '<script>var ctx = document.getElementById("myChart").getContext("2d");'
+            script += 'var myChart = new Chart(ctx, {type: "bar",data: {labels: ['
+            for fish in fish_amount:
+                script += '"'+fish+'",'
+                script = script[:-1]
+                script += '],datasets: [{label: "公斤",data: ['
+            for fish in fish_amount:
+                script += str(sum(fish_amount[fish][lure][0] for lure in fish_amount[fish]))+','
+                script = script[:-1]
+                script += '],backgroundColor: "rgba(255, 99, 132, 0.2)",borderColor: "rgba(255, 99, 132, 1)",borderWidth: 1},{label: "数量",data: ['
+            for fish in fish_amount:
+                script += str(sum(fish_amount[fish][lure][1] for lure in fish_amount[fish]))+','
+                script = script[:-1]
+                script += '],backgroundColor: "rgba(54, 162, 235, 0.2)",borderColor: "rgba(54, 162, 235, 1)",borderWidth: 1}]}'
+            script += '});</script>'
             # send report
-            self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("捕获统计",report)).json()
+            self.__post(url="https://wxpusher.zjiecode.com/api/send/message",json=self.__build_json("捕获统计",report))
 
         # clear fish_amount
         fish_amount.clear()

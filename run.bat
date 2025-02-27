@@ -1,1 +1,1 @@
-python ./miao.py
+python ./pusher.py
